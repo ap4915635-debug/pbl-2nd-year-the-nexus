@@ -2,7 +2,6 @@
 #include <string>
 #include <limits>
 using namespace std;
-
 const int CAPACITY = 5;
 
 class Node
