@@ -1,281 +1,62 @@
 # pbl-2nd-year-the-nexus
 GEHU PBL Academic Project - Team The Nexus
-#include <iostream>
-#include <string>
-#include <limits>
-using namespace std;
 
-const int CAPACITY = 5;
+KeyFlux – Mini Redis Cache System
 
-class Node
-{
-public:
-    string key;
-    string value;
-    int frequency;  
-    int lastUsed;    
-    Node *prev;
-    Node *next;
+GEHU PBL Academic Project – Team The Nexus
 
-    Node(string k, string v, int time)
-    {
-        key = k;
-        value = v;
-        frequency = 1;
-        lastUsed = time;
-        prev = NULL;
-        next = NULL;
-    }
-};
+About the Project
 
-class Cache
-{
-private:
-    Node *head;
-    Node *tail;
-    int count;
-    int hits;
-    int misses;
-    int clock;   
+KeyFlux is a mini Redis-inspired in-memory key-value cache system developed using C++. It stores data in RAM and supports basic cache operations such as SET, GET, DELETE and DISPLAY.
 
-    Node* find(const string &key)
-    {
-        for (Node *cur = head; cur != NULL; cur = cur->next)
-        {
-            if (cur->key == key)
-                return cur;
-        }
-        return NULL;
-    }
+The project also implements cache replacement using an LFU (Least Frequently Used) policy with LRU (Least Recently Used) as a tie-breaker.
 
-    void addFront(Node *n)
-    {
-        n->next = head;
-        if (head != NULL)
-            head->prev = n;
-        else
-            tail = n;
-        head = n;
-        count++;
-    }
+Features
 
-    void removeNode(Node *n)
-    {
-        if (n->prev != NULL)
-            n->prev->next = n->next;
-        else
-            head = n->next;
+- SET – Insert or update key-value pairs.
+- GET – Retrieve values using keys.
+- DELETE – Remove stored entries.
+- DISPLAY – Display all cache entries.
+- LFU with LRU tie-breaking – Select a cache entry for eviction.
+- Cache Statistics – Track hits, misses and their ratios.
+- Fixed Cache Capacity – Maximum 5 entries.
 
-        if (n->next != NULL)
-            n->next->prev = n->prev;
-        else
-            tail = n->prev;
+Data Structures and Concepts Used
 
-        delete n;
-        count--;
-    }
+- Classes and Objects
+- Doubly Linked List
+- Dynamic Memory Allocation
+- Pointers
+- Constructors and Destructors
+- Linear Searching
+- Cache Eviction
+- Hit and Miss Statistics
 
-    Node* pickVictim()
-    {
-        Node *victim = head;
-        for (Node *cur = head; cur != NULL; cur = cur->next)
-        {
-            if (cur->frequency < victim->frequency ||
-               (cur->frequency == victim->frequency && cur->lastUsed < victim->lastUsed))
-            {
-                victim = cur;
-            }
-        }
-        return victim;
-    }
+Cache Replacement Policy
 
-    void evict()
-    {
-        Node *victim = pickVictim();
-        cout << "Cache full\n";
-        cout << "Evicted key: " << victim->key << "\n";
-        removeNode(victim);
-    }
+KeyFlux uses LFU (Least Frequently Used) as its primary eviction policy.
 
-public:
-    Cache()
-    {
-        head = NULL;
-        tail = NULL;
-        count = 0;
-        hits = 0;
-        misses = 0;
-        clock = 0;
-    }
+When multiple entries have the same frequency, the entry with the oldest last-used time is selected for eviction (LRU tie-breaking).
 
-    ~Cache()
-    {
-        while (head != NULL)
-            removeNode(head);
-    }
+Project Implementation
 
-    void set(const string &key, const string &value)
-    {
-        clock++;
-        Node *found = find(key);
+The complete C++ source code is provided below.
 
-        if (found != NULL)
-        {
-            found->value = value;
-            found->frequency++;
-            found->lastUsed = clock;
-            cout << "Value updated successfully\n";
-            return;
-        }
+How to Run
 
-        if (count >= CAPACITY)
-            evict();
+Compile the program using a C++ compiler:
 
-        addFront(new Node(key, value, clock));
-        cout << "Key inserted successfully\n";
-    }
+g++ main.cpp -o keyflux
 
-    void get(const string &key)
-    {
-        clock++;
-        Node *found = find(key);
+Run the program:
 
-        if (found == NULL)
-        {
-            misses++;
-            cout << "Key not found\n";
-            return;
-        }
+./keyflux
 
-        hits++;
-        found->frequency++;
-        found->lastUsed = clock;
-        cout << "Value: " << found->value << "\n";
-    }
+Team
 
-    void del(const string &key)
-    {
-        Node *found = find(key);
+Team Name: The Nexus
 
-        if (found == NULL)
-        {
-            cout << "Key not found\n";
-            return;
-        }
+Project: KeyFlux – Mini Redis Cache System
 
-        removeNode(found);
-        cout << "Key deleted successfully\n";
-    }
-
-    void display()
-    {
-        if (head == NULL)
-        {
-            cout << "Cache is empty\n";
-            return;
-        }
-
-        cout << "\nCache Contents:\n";
-        for (Node *cur = head; cur != NULL; cur = cur->next)
-        {
-            cout << "Key: " << cur->key
-                 << " Value: " << cur->value
-                 << " Frequency: " << cur->frequency
-                 << " Last Used: " << cur->lastUsed << "\n";
-        }
-        cout << "Total entries: " << count << "\n";
-    }
-
-    void stats()
-    {
-        int total = hits + misses;
-
-        cout << "\nCache Statistics:\n";
-        cout << "Hits: " << hits << "\n";
-        cout << "Misses: " << misses << "\n";
-        cout << "Total entries: " << count << "\n";
-
-        if (total > 0)
-        {
-            cout << "Hit Ratio: " << hits * 100.0 / total << "%\n";
-            cout << "Miss Ratio: " << misses * 100.0 / total << "%\n";
-        }
-        else
-        {
-            cout << "No GET requests yet\n";
-        }
-    }
-};
-
-void showMenu()
-{
-    cout << "\nKeyFlux Menu:\n";
-    cout << "1. SET\n";
-    cout << "2. GET\n";
-    cout << "3. DELETE\n";
-    cout << "4. DISPLAY\n";
-    cout << "5. STATISTICS\n";
-    cout << "6. EXIT\n";
-    cout << "Enter choice: ";
-}
-string askKey()
-{
-    string key;
-    cout << "Enter key: ";
-    cin >> key;
-    return key;
-}
-
-int main()
-{
-    Cache cache;
-    int choice = 0;
-
-    do
-    {
-        showMenu();
-
-        if (!(cin >> choice))
-        {
-            // user typed a letter, clear the error and throw the line away
-            cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            cout << "Invalid choice\n";
-            choice = 0;
-            continue;
-        }
-
-        switch (choice)
-        {
-            case 1:
-            {
-                string key = askKey();
-                string value;
-                cout << "Enter value: ";
-                cin.ignore();           
-                getline(cin, value);  
-                cache.set(key, value);
-                break;
-            }
-            case 2:
-                cache.get(askKey());
-                break;
-            case 3:
-                cache.del(askKey());
-                break;
-            case 4:
-                cache.display();
-                break;
-            case 5:
-                cache.stats();
-                break;
-            case 6:
-                cout << "Exiting KeyFlux\n";
-                break;
-            default:
-                cout << "Invalid choice\n";
-        }
-    } while (choice != 6);
-
-    return 0;
-}
+Platform: C++
+        
