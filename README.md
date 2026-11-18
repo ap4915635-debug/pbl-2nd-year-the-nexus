@@ -58,5 +58,5 @@ Team Name: The Nexus
 
 Project: KeyFlux – Mini Redis Cache System
 
-Platform: C++
+Platform: C++.
         
