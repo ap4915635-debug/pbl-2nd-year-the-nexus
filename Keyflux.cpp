@@ -13,7 +13,6 @@ int frequency;
 int lastUsed;
 Node *prev;
 Node *next;
-
 Node(string k, string v, int time)  
 {  
     key = k;  
@@ -23,9 +22,7 @@ Node(string k, string v, int time)
     prev = NULL;  
     next = NULL;  
 }
-
 };
-
 class Cache
 {
 private:
@@ -35,7 +32,6 @@ int count;
 int hits;
 int misses;
 int clock;
-
 Node* find(const string &key)  
 {  
     for (Node *cur = head; cur != NULL; cur = cur->next)  
@@ -45,7 +41,6 @@ Node* find(const string &key)
     }  
     return NULL;  
 }  
-
 void addFront(Node *n)  
 {  
     n->next = head;  
@@ -63,12 +58,10 @@ void removeNode(Node *n)
         n->prev->next = n->next;  
     else  
         head = n->next;  
-
     if (n->next != NULL)  
         n->next->prev = n->prev;  
     else  
         tail = n->prev;  
-
     delete n;  
     count--;  
 }  
@@ -94,7 +87,6 @@ void evict()
     cout << "Evicted key: " << victim->key << "\n";  
     removeNode(victim);  
 }
-
 public:
 Cache()
 {
@@ -105,7 +97,6 @@ hits = 0;
 misses = 0;
 clock = 0;
 }
-
 ~Cache()  
 {  
     while (head != NULL)  
@@ -125,7 +116,6 @@ void set(const string &key, const string &value)
         cout << "Value updated successfully\n";  
         return;  
     }  
-
     if (count >= CAPACITY)  
         evict();  
 
@@ -150,7 +140,6 @@ void get(const string &key)
     found->lastUsed = clock;  
     cout << "Value: " << found->value << "\n";  
 }  
-
 void del(const string &key)  
 {  
     Node *found = find(key);  
@@ -160,11 +149,9 @@ void del(const string &key)
         cout << "Key not found\n";  
         return;  
     }  
-
     removeNode(found);  
     cout << "Key deleted successfully\n";  
 }  
-
 void display()  
 {  
     if (head == NULL)  
@@ -172,7 +159,6 @@ void display()
         cout << "Cache is empty\n";  
         return;  
     }  
-
     cout << "\nCache Contents:\n";  
     for (Node *cur = head; cur != NULL; cur = cur->next)  
     {  
@@ -183,7 +169,6 @@ void display()
     }  
     cout << "Total entries: " << count << "\n";  
 }  
-
 void stats()  
 {  
     int total = hits + misses;  
@@ -192,7 +177,6 @@ void stats()
     cout << "Hits: " << hits << "\n";  
     cout << "Misses: " << misses << "\n";  
     cout << "Total entries: " << count << "\n";  
-
     if (total > 0)  
     {  
         cout << "Hit Ratio: " << hits * 100.0 / total << "%\n";  
@@ -203,9 +187,7 @@ void stats()
         cout << "No GET requests yet\n";  
     }  
 }
-
 };
-
 void showMenu()
 {
 cout << "\nKeyFlux Menu:\n";
@@ -224,12 +206,10 @@ cout << "Enter key: ";
 cin >> key;
 return key;
 }
-
 int main()
 {
 Cache cache;
 int choice = 0;
-
 do  
 {  
     showMenu();  
