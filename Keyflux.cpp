@@ -79,7 +79,6 @@ Node* pickVictim()
     }  
     return victim;  
 }  
-
 void evict()  
 {  
     Node *victim = pickVictim();  
@@ -102,7 +101,6 @@ clock = 0;
     while (head != NULL)  
         removeNode(head);  
 }  
-
 void set(const string &key, const string &value)  
 {  
     clock++;  
@@ -118,7 +116,6 @@ void set(const string &key, const string &value)
     }  
     if (count >= CAPACITY)  
         evict();  
-
     addFront(new Node(key, value, clock));  
     cout << "Key inserted successfully\n";  
 }  
@@ -216,14 +213,11 @@ do
 
     if (!(cin >> choice))  
     {  
-        // user typed a letter, clear the error and throw the line away  
-        cin.clear();  
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');  
+        cin.clear();   cin.ignore(numeric_limits<streamsize>::max(), '\n');  
         cout << "Invalid choice\n";  
         choice = 0;  
         continue;  
     }  
-
     switch (choice)  
     {  
         case 1:  
@@ -255,7 +249,5 @@ do
             cout << "Invalid choice\n";  
     }  
 } while (choice != 6);  
-
 return 0;
-
 }
